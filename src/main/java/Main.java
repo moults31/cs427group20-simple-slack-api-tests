@@ -91,10 +91,9 @@ public class Main {
      * @param args
      */
     public static void main(String[] args) {
-        // Fails with invalid auth. See https://api.slack.com/changelog/2020-11-no-more-tokens-in-querystrings-for-newly-created-apps
-        String token = System.getenv("CS427GROUP20_SLACK_BOT_AUTHTOKEN").toString();
-        System.out.println(token);
-        SlackSession session = SlackSessionFactory.createWebSocketSlackSession(token);
+        String botToken = System.getenv("CS427GROUP20_SLACK_BOT_AUTHTOKEN").toString();
+        String userToken = System.getenv("CS427GROUP20_SLACK_USER_AUTHTOKEN").toString();
+        session = SlackSessionFactory.createWebSocketSlackSession(userToken, botToken);
         try{
             session.connect();
         }
@@ -102,7 +101,7 @@ public class Main {
             System.out.println("Error reading in value");
             mainMenu();
         }
-        SlackChannel channel = session.findChannelByName("test-simple-slack-api");
+        channel = session.findChannelByName("test-simple-slack-api");
         System.out.println("Welcome to group 20's fabulous simple-slack-api test interface!\n");
         mainMenu();
     }
