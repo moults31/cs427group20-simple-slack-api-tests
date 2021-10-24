@@ -11,3 +11,6 @@
 
 # Run
 `java -jar build/libs/cs427group20-simple-slack-api-tests-1.0-SNAPSHOT.jar`
+
+# Known issues
+Auth will not work until [Issue #283](https://github.com/Itiviti/simple-slack-api/issues/283) is resolved.
