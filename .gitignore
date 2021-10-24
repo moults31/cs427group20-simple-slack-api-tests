@@ -1,0 +1,10 @@
+.vscode
+.idea
+build
+*.class
+*.iws
+.gradle
+resources/env.sh
+.project
+.classpath
+.settings
