@@ -3,14 +3,16 @@ package org.example.cs427group20;
 import com.ullink.slack.simpleslackapi.SlackChannel;
 import com.ullink.slack.simpleslackapi.SlackSession;
 import com.ullink.slack.simpleslackapi.impl.SlackSessionFactory;
-
 import com.ullink.slack.simpleslackapi.events.SlackMessagePosted;
+
 import org.example.cs427group20.FetchingMessageHistory;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.List;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 /**
  *
@@ -27,6 +29,7 @@ public class Main {
      * main menu commands.
      */
     public static void mainMenu() {
+        System.out.println("2. Send today's date in the Slack channel");
         System.out.println("1. Fetch message history (last 10)");
         System.out.println("0. Exit\n");
         
@@ -34,15 +37,16 @@ public class Main {
         try {
             int userInput = Integer.parseInt(inputOutput("Please press the number you want."));
             
-            if (userInput >= 0 && userInput <=1) {
+            if (userInput >= 0 && userInput <=2) {
+                if (userInput == 2) sendMessageLocalDate();
                 if (userInput == 1) fetchTenLastMessagesFromChannelHistory();
                 if (userInput == 0) System.exit(0);
             } else {
-                System.out.println("Please enter a number from 0 - 6");
+                System.out.println("Please enter a number from 0 - 2");
                 mainMenu();
             }
         } catch (NumberFormatException e) {
-            System.out.println("Please enter a number from 0 - 6");
+            System.out.println("Please enter a number from 0 - 2");
             mainMenu();
         }
     }
@@ -64,6 +68,12 @@ public class Main {
         }
     }
 
+    public static void sendMessageLocalDate()
+    {
+        String now = LocalDate.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+        session.sendMessage(channel, "Today's date is " + now);
+        mainMenu();
+    }
 
     
     /**
@@ -92,8 +102,8 @@ public class Main {
      */
     public static void main(String[] args) {
         String botToken = System.getenv("CS427GROUP20_SLACK_BOT_AUTHTOKEN").toString();
-        String userToken = System.getenv("CS427GROUP20_SLACK_USER_AUTHTOKEN").toString();
-        session = SlackSessionFactory.createWebSocketSlackSession(userToken, botToken);
+        String appToken = System.getenv("CS427GROUP20_SLACK_APP_AUTHTOKEN").toString();
+        session = SlackSessionFactory.createWebSocketSlackSession(botToken, appToken);
         try{
             session.connect();
         }
