@@ -4,6 +4,9 @@ import com.ullink.slack.simpleslackapi.SlackChannel;
 import com.ullink.slack.simpleslackapi.SlackSession;
 import com.ullink.slack.simpleslackapi.impl.SlackSessionFactory;
 import com.ullink.slack.simpleslackapi.events.SlackMessagePosted;
+import com.ullink.slack.simpleslackapi.SlackPersona;
+import com.ullink.slack.simpleslackapi.impl.SlackPersonaImpl;
+import com.ullink.slack.simpleslackapi.SlackUser;
 
 import org.example.cs427group20.FetchingMessageHistory;
 
@@ -29,6 +32,7 @@ public class Main {
      * main menu commands.
      */
     public static void mainMenu() {
+        System.out.println("3. Invite user into the Slack channel");
         System.out.println("2. Send today's date in the Slack channel");
         System.out.println("1. Fetch message history (last 10)");
         System.out.println("0. Exit\n");
@@ -37,16 +41,17 @@ public class Main {
         try {
             int userInput = Integer.parseInt(inputOutput("Please press the number you want."));
             
-            if (userInput >= 0 && userInput <=2) {
+            if (userInput >= 0 && userInput <=3) {
+                if (userInput == 3) inviteUserToChannel();
                 if (userInput == 2) sendMessageLocalDate();
                 if (userInput == 1) fetchTenLastMessagesFromChannelHistory();
                 if (userInput == 0) System.exit(0);
             } else {
-                System.out.println("Please enter a number from 0 - 2");
+                System.out.println("Please enter a number from 0 - 3");
                 mainMenu();
             }
         } catch (NumberFormatException e) {
-            System.out.println("Please enter a number from 0 - 2");
+            System.out.println("Please enter a number from 0 - 3");
             mainMenu();
         }
     }
@@ -72,6 +77,23 @@ public class Main {
     {
         String now = LocalDate.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
         session.sendMessage(channel, "Today's date is " + now);
+        mainMenu();
+    }
+
+    public static void inviteUserToChannel()
+    {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        System.out.println("Enter user ID to invite");
+        String uid = "";
+        try {
+            uid = br.readLine();
+        }
+        catch (IOException e){
+            System.out.println("Error reading in value");
+            mainMenu();
+        }
+        SlackUser user = SlackPersonaImpl.builder().id(uid).build();
+        session.inviteToChannel(channel, user);
         mainMenu();
     }
 

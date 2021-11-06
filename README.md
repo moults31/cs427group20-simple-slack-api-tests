@@ -16,5 +16,5 @@ export CS427GROUP20_SLACK_APP_AUTHTOKEN="xapp-<token>"
 
 # Run
 - Do `source resources/env.sh` to export the tokens as environment variables in the shell you will run in
-`java -jar build/libs/cs427group20-simple-slack-api-tests-1.0-SNAPSHOT.jar`
+- `java -jar build/libs/cs427group20-simple-slack-api-tests-1.0-SNAPSHOT.jar`
 
