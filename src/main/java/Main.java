@@ -83,15 +83,7 @@ public class Main {
     public static void inviteUserToChannel()
     {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        System.out.println("Enter user ID to invite");
-        String uid = "";
-        try {
-            uid = br.readLine();
-        }
-        catch (IOException e){
-            System.out.println("Error reading in value");
-            mainMenu();
-        }
+        String uid = inputOutput("Enter user ID to invite");
         SlackUser user = SlackPersonaImpl.builder().id(uid).build();
         session.inviteToChannel(channel, user);
         mainMenu();
