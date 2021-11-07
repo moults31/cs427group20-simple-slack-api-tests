@@ -8,3 +8,4 @@ resources/env.sh
 .project
 .classpath
 .settings
+*.jar
