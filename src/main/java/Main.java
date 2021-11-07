@@ -10,6 +10,7 @@ import com.ullink.slack.simpleslackapi.SlackUser;
 import com.ullink.slack.simpleslackapi.SlackMessageHandle;
 import com.ullink.slack.simpleslackapi.replies.SlackMessageReply;
 import com.ullink.slack.simpleslackapi.SlackPresence;
+import com.ullink.slack.simpleslackapi.SlackPreparedMessage;
 
 import org.example.cs427group20.FetchingMessageHistory;
 
@@ -42,6 +43,7 @@ public class Main {
      * main menu commands.
      */
     public static void mainMenu() {
+        System.out.println("8. Send today's date in a direct Slack channel");
         System.out.println("7. Set bot's presence to away");
         System.out.println("6. Set bot's presence to auto");
         System.out.println("5. Get presence of a user");
@@ -55,7 +57,8 @@ public class Main {
         try {
             int userInput = Integer.parseInt(inputOutput("Please press the number you want."));
             
-            if (userInput >= 0 && userInput <=7) {
+            if (userInput >= 0 && userInput <=8) {
+                if (userInput == 8) sendDirectMessageLocalDate();
                 if (userInput == 7) setPresenceAway();
                 if (userInput == 6) setPresenceAuto();
                 if (userInput == 5) getPresence();
@@ -65,11 +68,11 @@ public class Main {
                 if (userInput == 1) fetchTenLastMessagesFromChannelHistory();
                 if (userInput == 0) System.exit(0);
             } else {
-                System.out.println("Please enter a number from 0 - 7");
+                System.out.println("Please enter a number from 0 - 8");
                 mainMenu();
             }
         } catch (NumberFormatException e) {
-            System.out.println("Please enter a number from 0 - 7");
+            System.out.println("Please enter a number from 0 - 8");
             mainMenu();
         }
     }
@@ -98,9 +101,23 @@ public class Main {
         mainMenu();
     }
 
+    public static void sendDirectMessageLocalDate()
+    {
+        String uid = inputOutput("Enter user ID to message");
+        SlackUser user = session.findUserById(uid);
+        String msg = "Today's date is " + LocalDate.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+
+        SlackChannel directChannel = SlackChannel.builder()
+        .id(uid)
+        .build();
+
+        session.sendMessage(directChannel, msg);
+
+        mainMenu();
+    }
+
     public static void inviteUserToChannel()
     {
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         String uid = inputOutput("Enter user ID to invite");
         SlackUser user = SlackPersonaImpl.builder().id(uid).build();
         session.inviteToChannel(channel, user);
@@ -109,7 +126,6 @@ public class Main {
 
     public static void getPresence()
     {
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         String uid = inputOutput("Enter user ID to get presence of");
         SlackPersona persona = SlackPersonaImpl.builder().id(uid).build();
         SlackPresence presence = session.getPresence(persona);
