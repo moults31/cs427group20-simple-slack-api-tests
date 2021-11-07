@@ -43,6 +43,7 @@ public class Main {
      * main menu commands.
      */
     public static void mainMenu() {
+        System.out.println("9. Get status of a user");
         System.out.println("8. Send today's date in a direct Slack channel");
         System.out.println("7. Set bot's presence to away");
         System.out.println("6. Set bot's presence to auto");
@@ -57,7 +58,8 @@ public class Main {
         try {
             int userInput = Integer.parseInt(inputOutput("Please press the number you want."));
             
-            if (userInput >= 0 && userInput <=8) {
+            if (userInput >= 0 && userInput <=9) {
+                if (userInput == 9) getUserStatus();
                 if (userInput == 8) sendDirectMessageLocalDate();
                 if (userInput == 7) setPresenceAway();
                 if (userInput == 6) setPresenceAuto();
@@ -68,11 +70,11 @@ public class Main {
                 if (userInput == 1) fetchTenLastMessagesFromChannelHistory();
                 if (userInput == 0) System.exit(0);
             } else {
-                System.out.println("Please enter a number from 0 - 8");
+                System.out.println("Please enter a number from 0 - 9");
                 mainMenu();
             }
         } catch (NumberFormatException e) {
-            System.out.println("Please enter a number from 0 - 8");
+            System.out.println("Please enter a number from 0 - 9");
             mainMenu();
         }
     }
@@ -168,7 +170,15 @@ public class Main {
         mainMenu();
     }
 
-    
+    public static void getUserStatus()
+    {
+        String uid = inputOutput("Enter user ID to message");
+        SlackUser user = session.findUserById(uid);
+        System.out.println(user.getStatusText());
+        System.out.println(user.getStatusEmoji());
+        mainMenu();
+    }
+
     /**
      * Passes a prompt to the user and returns the user specified 
      * string.
