@@ -7,6 +7,9 @@ import com.ullink.slack.simpleslackapi.events.SlackMessagePosted;
 import com.ullink.slack.simpleslackapi.SlackPersona;
 import com.ullink.slack.simpleslackapi.impl.SlackPersonaImpl;
 import com.ullink.slack.simpleslackapi.SlackUser;
+import com.ullink.slack.simpleslackapi.SlackMessageHandle;
+import com.ullink.slack.simpleslackapi.replies.SlackMessageReply;
+import com.ullink.slack.simpleslackapi.SlackPresence;
 
 import org.example.cs427group20.FetchingMessageHistory;
 
@@ -16,6 +19,13 @@ import java.io.InputStreamReader;
 import java.util.List;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
 
 /**
  *
@@ -32,6 +42,10 @@ public class Main {
      * main menu commands.
      */
     public static void mainMenu() {
+        System.out.println("7. Set bot's presence to away");
+        System.out.println("6. Set bot's presence to auto");
+        System.out.println("5. Get presence of a user");
+        System.out.println("4. Send a file to the Slack channel");
         System.out.println("3. Invite user into the Slack channel");
         System.out.println("2. Send today's date in the Slack channel");
         System.out.println("1. Fetch message history (last 10)");
@@ -41,17 +55,21 @@ public class Main {
         try {
             int userInput = Integer.parseInt(inputOutput("Please press the number you want."));
             
-            if (userInput >= 0 && userInput <=3) {
+            if (userInput >= 0 && userInput <=7) {
+                if (userInput == 7) setPresenceAway();
+                if (userInput == 6) setPresenceAuto();
+                if (userInput == 5) getPresence();
+                if (userInput == 4) sendFile();
                 if (userInput == 3) inviteUserToChannel();
                 if (userInput == 2) sendMessageLocalDate();
                 if (userInput == 1) fetchTenLastMessagesFromChannelHistory();
                 if (userInput == 0) System.exit(0);
             } else {
-                System.out.println("Please enter a number from 0 - 3");
+                System.out.println("Please enter a number from 0 - 7");
                 mainMenu();
             }
         } catch (NumberFormatException e) {
-            System.out.println("Please enter a number from 0 - 3");
+            System.out.println("Please enter a number from 0 - 7");
             mainMenu();
         }
     }
@@ -86,6 +104,51 @@ public class Main {
         String uid = inputOutput("Enter user ID to invite");
         SlackUser user = SlackPersonaImpl.builder().id(uid).build();
         session.inviteToChannel(channel, user);
+        mainMenu();
+    }
+
+    public static void getPresence()
+    {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        String uid = inputOutput("Enter user ID to get presence of");
+        SlackPersona persona = SlackPersonaImpl.builder().id(uid).build();
+        SlackPresence presence = session.getPresence(persona);
+        System.out.println("Presence: " + presence.getPresence());
+        mainMenu();
+    }
+
+    public static void setPresenceAway()
+    {
+        session.setPresence(SlackPresence.AWAY);
+        mainMenu();
+    }
+
+    public static void setPresenceAuto()
+    {
+        session.setPresence(SlackPresence.AUTO);
+        mainMenu();
+    }
+
+    public static void sendFile()
+    {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        String fileName = inputOutput("Enter full path of file to send");
+        Path filePath = Paths.get(fileName);
+        File fileToSend = new File(fileName);
+        try {
+            InputStream data = new FileInputStream(fileToSend);
+            SlackMessageReply reply = session.sendFile(channel, data, filePath.getFileName().toString()).getReply();
+            if(reply.isOk()) {
+                System.out.println("***** Sendfile result: Ok");
+            }
+            else {
+                System.out.println(reply.getErrorMessage());
+            }
+        }
+        catch (FileNotFoundException e){
+            System.out.println("File not found: " + fileName);
+            mainMenu();
+        }
         mainMenu();
     }
 
