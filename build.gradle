@@ -49,3 +49,32 @@ task fatJar(type: Jar) {
     from { configurations.compileClasspath.collect { it.isDirectory() ? it : zipTree(it) } }
     with jar
 }
+
+test {
+    useJUnitPlatform()
+}
+
+dependencies {
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.3.1'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.3.1'
+    testCompile('org.springframework.boot:spring-boot-starter-test')
+}
+
+//sourceSets {
+//    test {
+//        java {
+//            srcDirs = ['src/test/java']
+//        }
+//    }
+//}
+
+sourceSets {
+    test {
+        resources {
+            srcDirs = ["src/main/java"]
+            includes = ["**/*.html"]
+        }
+    }
+}
+
+sourceSets.test.resources.srcDir 'src/test/resources'

@@ -122,6 +122,7 @@ public class Main {
     {
         String uid = inputOutput("Enter user ID to invite");
         SlackUser user = SlackPersonaImpl.builder().id(uid).build();
+
         session.inviteToChannel(channel, user);
         mainMenu();
     }
