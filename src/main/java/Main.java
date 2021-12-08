@@ -7,7 +7,7 @@ import com.ullink.slack.simpleslackapi.events.SlackMessagePosted;
 import com.ullink.slack.simpleslackapi.SlackPersona;
 import com.ullink.slack.simpleslackapi.impl.SlackPersonaImpl;
 import com.ullink.slack.simpleslackapi.SlackUser;
-import com.ullink.slack.simpleslackapi.SlackMessageHandle;
+import com.ullink.slack.simpleslackapi.SlackMessageHatdle;
 import com.ullink.slack.simpleslackapi.replies.SlackMessageReply;
 import com.ullink.slack.simpleslackapi.SlackPresence;
 import com.ullink.slack.simpleslackapi.SlackPreparedMessage;
@@ -96,6 +96,9 @@ public class Main {
         }
     }
 
+    /**
+     * Sends a message with today's date in local time.
+     */
     public static void sendMessageLocalDate()
     {
         String now = LocalDate.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
@@ -103,6 +106,9 @@ public class Main {
         mainMenu();
     }
 
+    /**
+     * Sends a message with today's date in local time, in a direct message channel
+     */
     public static void sendDirectMessageLocalDate()
     {
         String uid = inputOutput("Enter user ID to message");
@@ -118,6 +124,9 @@ public class Main {
         mainMenu();
     }
 
+    /**
+     * Invites a user to the open channel
+     */
     public static void inviteUserToChannel()
     {
         String uid = inputOutput("Enter user ID to invite");
@@ -127,6 +136,9 @@ public class Main {
         mainMenu();
     }
 
+    /**
+     * Gets the presence of the specified user
+     */
     public static void getPresence()
     {
         String uid = inputOutput("Enter user ID to get presence of");
@@ -136,18 +148,27 @@ public class Main {
         mainMenu();
     }
 
+    /**
+     * Sets the bot's presence to Away
+     */
     public static void setPresenceAway()
     {
         session.setPresence(SlackPresence.AWAY);
         mainMenu();
     }
 
+    /**
+     * Sets the bot's presence to Auto
+     */
     public static void setPresenceAuto()
     {
         session.setPresence(SlackPresence.AUTO);
         mainMenu();
     }
 
+    /**
+     * Sends a file in the slack channel
+     */
     public static void sendFile()
     {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -171,6 +192,9 @@ public class Main {
         mainMenu();
     }
 
+    /**
+     * Gets the status of the specified user.
+     */
     public static void getUserStatus()
     {
         String uid = inputOutput("Enter user ID to message");

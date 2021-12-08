@@ -35,6 +35,11 @@ public class MainTest {
     private static SlackSession session;
     private static SlackChannel channel;
 
+    /**
+     * Setup should run before any test.
+     * Without fixes for #283 and #279, this will fail due to invalid auth.
+     * If this fails, none of the other tests will work.
+     */
     @BeforeAll
     public static void setup() {
         // Add your bot and app level token here!
